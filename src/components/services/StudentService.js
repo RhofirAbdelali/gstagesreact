@@ -12,19 +12,6 @@ class StudentService {
                 return response.json();
             });
     }
-
-    async fetchStudent(id) {
-        return fetch(SERVER_URL + `/students/id/${id}`, {
-            credentials: 'include'
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch student');
-                }
-                return response.json();
-            });
-    }
-
     async updateStudent(student) {
         return fetch(SERVER_URL + '/students/update/' + student.id, {
             method: student.id ? 'PUT' : 'POST',

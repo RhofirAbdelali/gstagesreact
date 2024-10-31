@@ -3,7 +3,6 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Home from './components/Home';
 import Stages from './components/Stages';
 import Students from './components/Students';
-import StudentDetail from './components/StudentDetail';
 import Companies from './components/Companies';
 import Supervisors from './components/Supervisors';
 import Register from './components/Register';
@@ -27,7 +26,6 @@ function App() {
 
 
                     <Route path="students" element={<Students />} />
-                    <Route path="/students/:id" element={<StudentDetail />} />
                     <Route path="students/create" element={<></>}/>
                     <Route path="students/update" element={<></>}/>
                     <Route path="students/delete" element={<></>}/>

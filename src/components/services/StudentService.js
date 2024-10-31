@@ -2,13 +2,27 @@ const SERVER_URL = "http://localhost:8080";
 
 class StudentService {
     async fetchAllStudents() {
-        return fetch(SERVER_URL + '/students')
-            .then(response => response.json());
+        return fetch(SERVER_URL + '/students', {
+            credentials: 'include'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch students');
+                }
+                return response.json();
+            });
     }
 
     async fetchStudent(id) {
-        return fetch(SERVER_URL + `/students/id/${id}`)
-            .then(response => response.json());
+        return fetch(SERVER_URL + `/students/id/${id}`, {
+            credentials: 'include'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch student');
+                }
+                return response.json();
+            });
     }
 
     async updateStudent(student) {
@@ -18,7 +32,8 @@ class StudentService {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(student)
+            body: JSON.stringify(student),
+            credentials: 'include'
         });
     }
 
@@ -28,7 +43,8 @@ class StudentService {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            }
+            },
+            credentials: 'include'
         });
         if (!response.ok) {
             throw new Error('Failed to delete student');
@@ -42,9 +58,11 @@ class StudentService {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(student)
+            body: JSON.stringify(student),
+            credentials: 'include'
         });
     }
 }
+
 const studentServiceInstance = new StudentService();
 export default studentServiceInstance;

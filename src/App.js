@@ -7,8 +7,8 @@ import StudentDetail from './components/StudentDetail';
 import Companies from './components/Companies';
 import Supervisors from './components/Supervisors';
 import Register from './components/Register';
-import Login from './components/Login';
-import Logout from './components/Logout';
+import Login from './components/auth/Login';
+import Logout from './components/auth/Logout';
 import Navigationbar from "./components/Navigationbar";
 
 function App() {
@@ -17,7 +17,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<Navigationbar/>}>
                     <Route index element={<Home/>}/>
-
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/logout" element={<Logout />} />
 
                     <Route path="stages" element={<Stages/>}/>
                     <Route path="stages/create" element={<></>}/>
@@ -45,8 +46,6 @@ function App() {
 
 
                     <Route path="register" element={<Register/>}/>
-                    <Route path="login" element={<Login/>}/>
-                    <Route path="logout" element={<Logout/>}/>
 
                 </Route>
             </Routes>

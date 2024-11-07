@@ -69,16 +69,21 @@ function Students() {
     };
 
     const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-        if (isEditing) {
-            await StudentService.updateStudent(values);
-            setStudentsList(studentsList.map(student => (student.id === values.id ? values : student)));
-        } else {
-            await StudentService.addStudent(values);
-            setStudentsList([...studentsList, { ...values, id: studentsList.length + 1 }]);
+        try{
+            if (isEditing) {
+                const updatedStudent = await StudentService.updateStudent(values);
+                setStudentsList(studentsList.map(student => (student.id === values.id ? updatedStudent : student)));
+            } else {
+                const newStudent = await StudentService.addStudent(values);
+                setStudentsList(prevStudentsList => [...prevStudentsList, newStudent]);
+            }
+            resetForm();
+            setShowModal(false);
+        } catch (error) {
+            console.error("Error:", error);
+        } finally {
+            setSubmitting(false);
         }
-        resetForm();
-        setShowModal(false);
-        setSubmitting(false);
     };
 
     const handleClose = () => setShowModal(false);

@@ -13,7 +13,7 @@ class StudentService {
             });
     }
     async updateStudent(student) {
-        return fetch(SERVER_URL + '/students/update/' + student.id, {
+        const response = await fetch(SERVER_URL + '/students/update/' + student.id, {
             method: student.id ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -22,6 +22,10 @@ class StudentService {
             body: JSON.stringify(student),
             credentials: 'include'
         });
+        if (!response.ok) {
+            throw new Error('Failed to update student');
+        }
+        return response.json();
     }
 
     async deleteStudent(id) {
@@ -39,7 +43,7 @@ class StudentService {
     }
 
     async addStudent(student) {
-        return fetch(SERVER_URL + '/students/addstudent', {
+        const response = await fetch(SERVER_URL + '/students/addstudent', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -48,6 +52,10 @@ class StudentService {
             body: JSON.stringify(student),
             credentials: 'include'
         });
+        if (!response.ok) {
+            throw new Error('Failed to add student');
+        }
+        return response.json();
     }
 }
 

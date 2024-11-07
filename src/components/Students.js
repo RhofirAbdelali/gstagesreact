@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Formik, Form } from 'formik';
+import {Formik, Form, Field} from 'formik';
 import * as Yup from 'yup';
 import StudentService from "./services/StudentService";
 import MyTextInput from './MyTextInput';
 import { Modal, Button } from 'react-bootstrap';
+import stageServiceInstance from "./services/StageService";
 
 function Students() {
     const [studentsList, setStudentsList] = useState([]);
+    const [stageList, setStageList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
@@ -18,14 +20,19 @@ function Students() {
         id: null,
         firstName: '',
         lastName: '',
-        email: ''
+        email: '',
+        stageId: null
     };
 
     useEffect(() => {
         setLoading(true);
-        StudentService.fetchAllStudents()
-            .then(data => {
-                setStudentsList(data);
+        Promise.all([
+            StudentService.fetchAllStudents(),
+            stageServiceInstance.fetchAllStages() // Fetch stages when component mounts
+        ])
+            .then(([students, stages]) => {
+                setStudentsList(students);
+                setStageList(stages);
                 setLoading(false);
             })
             .catch(error => {
@@ -96,6 +103,7 @@ function Students() {
                         <th>Prénom</th>
                         <th>Nom</th>
                         <th>Email</th>
+                        <th>Stage</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -105,6 +113,7 @@ function Students() {
                             <td>{student.firstName}</td>
                             <td>{student.lastName}</td>
                             <td>{student.email}</td>
+                            <td>{student.stageId ? stageList.find(stage => stage.id === student.stageId)?.name : 'Etudiant sans stage'}</td>
                             <td>
                                 <button className="btn btn-warning btn-sm me-2"
                                         onClick={() => handleUpdate(student)}>Modifier
@@ -133,6 +142,9 @@ function Students() {
                                 <p><strong>Prénom : </strong>{selectedStudent.firstName}</p>
                                 <p><strong>Nom : </strong>{selectedStudent.lastName}</p>
                                 <p><strong>Email : </strong>{selectedStudent.email}</p>
+                                <p><strong>Stage : </strong>{selectedStudent.stageId ? stageList.find(stage => stage.id === selectedStudent.stageId)?.name : 'Etudiant sans stage'}
+                                </p>
+
                                 <Modal.Footer>
                                     <Button variant="secondary" onClick={handleClose}>Fermer</Button>
                                 </Modal.Footer>
@@ -150,6 +162,7 @@ function Students() {
                                     email: Yup.string()
                                         .email('Adresse e-mail invalide')
                                         .required('Requis'),
+                                    stageId: Yup.number().nullable()
                                 })}
                                 onSubmit={handleSubmit}
                             >
@@ -157,6 +170,15 @@ function Students() {
                                     <MyTextInput name="firstName" type="text" label="Prénom"/>
                                     <MyTextInput name="lastName" type="text" label="Nom"/>
                                     <MyTextInput name="email" type="email" label="Email"/>
+                                    <div className="form-group">
+                                        <label htmlFor="stageId">Stage</label>
+                                        <Field as="select" name="stageId" className="form-control">
+                                            <option value="">Etudiant sans stage</option>
+                                            {stageList.map(stage => (
+                                                <option key={stage.id} value={stage.id}>{stage.name}</option>
+                                            ))}
+                                        </Field>
+                                    </div>
                                     <Modal.Footer>
                                         <Button variant="secondary" onClick={handleClose}>Fermer</Button>
                                         <Button type="submit" className="btn btn-primary">
@@ -171,7 +193,7 @@ function Students() {
             </div>
         </div>
         </div>
-        );
-        }
+    );
+}
 
-        export default Students;
+export default Students;
